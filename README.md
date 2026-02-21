@@ -22,3 +22,4 @@ in test2 6000 file twice around (1.5 milion words in dataset).
 test1 took 3.5609239149998757 second
 test2 took 0.782906192000155 second.
 
+# probability
