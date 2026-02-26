@@ -2,7 +2,7 @@ from os import walk
 from math import log
 import time
 
-ACCURACY = 200
+ACCURACY = 6000
 path_ham = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/ham'
 path_spam = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/spam'
 HAM = 0
@@ -107,6 +107,6 @@ def main():
     print(mes_spam)
     if mes_ham>mes_spam:print('ham')
     else:print('spam')
-    print(time.perf_counter()-x)
+    print(time.perf_counter()-x,'Seconds')
 if __name__=='__main__':
     main()

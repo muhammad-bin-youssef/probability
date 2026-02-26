@@ -12,16 +12,25 @@ the dataset to train on it from TSODING.
 
 https://www.youtube.com/watch?v=JsfOXk7qmSM
 
-I start dead simple program test1.py without any optimes and with the most
-bad code you could ever imagen then one by one I make it better in 
-test2.py by using dict instead of list which make it FAST AS .
+I start dead simple program test.py without any optimzing and with the most
+bad code you could ever imagen then one by one. 
+I make it better in test2.py by using dict instead of list which make it FAST AS .
 
 The jump in preformence from test1 to test2 the program read 
-in test1 200 file twice around (42000 thousnd words in dataset) 
+in test1 6000 file twice around (42000 thousnd words in dataset).
 in test2 6000 file twice around (1.5 milion words in dataset). 
-test1 took 3.5609239149998757 second
-test2 took 0.782906192000155 second.
+test1 took 445 second. => 187 second.
+test2 took 0.782 second. => 11 second. I think the reason for that the way I wrote code 
+Cpython optimize it, but pypy make new copy of the variable which slow the program by 100 magnitude
+as shown in the block:
+
+"""
+texts = texts + y
+"""
 
 In test3 I use MultiProcess to process the ham and spam seprately 
 thats result in preformence jump from 0.8 to 0.5 second around 37.6%
 preformence gain.
+
+--pypy--
+I taked a step back I use the "pypy" python intepreter 

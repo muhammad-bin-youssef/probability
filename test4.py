@@ -1,7 +1,11 @@
-from os import walk
+import os
 from math import log
 import time
 from multiprocessing import Process, Queue
+from concurrent.futures import ThreadPoolExecutor
+import threading 
+
+lock = threading.Lock()
 
 ACCURACY = 6000
 path_ham = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/ham'
@@ -29,33 +33,35 @@ def list_histogram(lst: list, label=''):
         counter += 1
         if label=='HAM':
             global HAM
-            HAM = counter
+            with lock:
+                HAM = counter
         else:
             global SPAM
-            SPAM = counter
+            with lock:
+                SPAM = counter
     return y    
 
-def read_file(path: str):
-    try:
-        with open(path, 'r') as f:
-            return f.read()
-    except FileNotFoundError as err:
-        ...
-    except FileExistsError as err:
-        ...
-    except UnicodeDecodeError as err:
-        ...
 
-def inits(path, label=''):
-    texts = ''
-    for _, _, files in walk(path):
+def read_file_thread(path: str):
+    try:
+        with open(path, 'r',errors='ignore', encoding='utf-8') as f:
+            return f.read()
+    except Exception:
+        return '' 
+
+def inits_threads(path, label):
+    all_text_list = []
+    files_to_read = []
+    for _, _, files in os.walk(path):
         for i in range(0, ACCURACY):
-            file = files[i]
-            y = str(read_file(str(path+'/'+file)))
-            texts = texts + y
+            files_to_read.append(os.path.join(path, files[i]))
         break
-    text = texts.upper().split()
-    return list_histogram(text, label)
+    with ThreadPoolExecutor(max_workers=100) as excuter:
+        results = list(excuter.map(read_file_thread,files_to_read))
+        full_content = ''.join(results).upper().split()
+        return list_histogram(full_content, label=label)
+
+
 
 def prob(dicts, sample: int):
     x = {}
@@ -81,12 +87,13 @@ def spam_message(message: str, P_spam):
     return score
 
 def process_spam(q):
-    spam = inits(path_spam, 'SPAM')
+    spam = inits_threads(path_spam, 'SPAM')
     P_spam = prob(spam, SPAM)
     mes_spam = spam_message(message=MESSAGE, P_spam=P_spam)
     q.put({'spam' : mes_spam})
+
 def process_ham(q):
-    ham = inits(path_ham, 'HAM')
+    ham = inits_threads(path_ham, 'HAM')
     P_ham = prob(ham, HAM)
     mes_ham = normal_message(message=MESSAGE, P_ham=P_ham)
     q.put({'ham' : mes_ham})
@@ -109,16 +116,12 @@ def main():
     p_spam.join()
 
     try:
-        if res1['ham']>res2['spam']:
-            print(f'spam score is {res2['spam']} \nham score is {res1['ham']} \nThe Mail is ham')
-        else:
-            print(f'spam score is {res2['spam']}\nham score is {res1['ham']}\nThe Mail is spam')
+        if res1['ham']>res2['spam']:print(f'spam score is {res2['spam']} \nham score is {res1['ham']} \nThe Mail is ham')
+        else:print(f'spam score is {res2['spam']}\nham score is {res1['ham']}\nThe Mail is spam')
 
     except KeyError as err:
-        if res1['spam']<res2['ham']:
-            print(f'spam score is {res1['spam']} \nham score is {res2['ham']} \nThe Mail is ham')
-        else:
-            print(f'spam score is {res1['spam']} \nham score is {res2['ham']} \nThe Mail is spam')
+        if res1['spam']<res2['ham']:print(f'spam score is {res1['spam']} \nham score is {res2['ham']} \nThe Mail is ham')
+        else:print(f'spam score is {res1['spam']} \nham score is {res2['ham']} \nThe Mail is spam')
 
     print(time.perf_counter()-time1, 'Second')
 
