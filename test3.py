@@ -3,7 +3,7 @@ from math import log
 import time
 from multiprocessing import Process, Queue
 
-ACCURACY = 6000
+ACCURACY = 16000
 path_ham = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/ham'
 path_spam = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/spam'
 HAM = 0
@@ -71,6 +71,7 @@ def normal_message(message: str, P_ham: dict):
         if i in P_ham:score += log(P_ham[i])
         else:score += log(1/(HAM+1))
     return score
+
 def spam_message(message: str, P_spam):
     P_normal = log(ACCURACY/(ACCURACY+ACCURACY))
     score = 0 + P_normal
@@ -85,6 +86,7 @@ def process_spam(q):
     P_spam = prob(spam, SPAM)
     mes_spam = spam_message(message=MESSAGE, P_spam=P_spam)
     q.put({'spam' : mes_spam})
+
 def process_ham(q):
     ham = inits(path_ham, 'HAM')
     P_ham = prob(ham, HAM)
@@ -110,9 +112,9 @@ def main():
 
     try:
         if res1['ham']>res2['spam']:
-            print(f'spam score is {res2['spam']} \nham score is {res1['ham']} \nThe Mail is ham')
+            print(f'ham score is {res1['ham']}\n spam score is {res2['spam']} \nThe Mail is ham')
         else:
-            print(f'spam score is {res2['spam']}\nham score is {res1['ham']}\nThe Mail is spam')
+            print(f'ham score is {res1['ham']}\n spam score is {res2['spam']} \nThe Mail is ham')
 
     except KeyError as err:
         if res1['spam']<res2['ham']:

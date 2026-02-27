@@ -2,7 +2,7 @@ from os import walk
 from math import log
 import time
 
-ACCURACY = 6000
+ACCURACY = 16000
 path_ham = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/ham'
 path_spam = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/spam'
 HAM = 0
