@@ -1,4 +1,4 @@
-from math import log
+from math import log, pow
 import time
 from multiprocessing import Process, Queue
 import sqlite3
@@ -77,14 +77,14 @@ def procc_mess(queue):
 def ham_mess(dic:dict, prior_ham:int, prior_spam:int, dic_mess:dict, queue):
     score = log(prior_ham / (prior_ham + prior_spam))
     for key, value in dic_mess.items():
-        if key in dic:score = score + log(dic[key] * value)
+        if key in dic: score = score + log(pow(dic[key],value))
         else: score = score + log(1/(1+prior_ham))
     queue.put({'ham_score':score})
 
 def spam_mess(dic:dict, prior_ham:int, prior_spam:int, dic_mess:dict, queue):
     score = log(prior_spam / (prior_ham + prior_spam))
     for key, value in dic_mess.items():
-        if key in dic:score = score + log(dic[key] * value)
+        if key in dic:score = score + log(pow(dic[key],value))
         else: score = score + log(1/(1+prior_spam))
     queue.put({'spam_score':score})
 
