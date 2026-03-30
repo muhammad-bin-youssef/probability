@@ -3,6 +3,7 @@ from math import log
 import time
 from global_variables import All  
 
+from pathlib import Path
 ACCURACY = All.ACCURACY
 path_ham = All.path_ham
 path_spam = All.path_spam

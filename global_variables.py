@@ -7,14 +7,14 @@ class All():
     #path_ham = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/ham'
     #path_spam = '/home/mhy/Documents/py/probability/Bayes/tsoding_filter_spam/data/train/spam'
     try:
-        path_spam = str(Path(__file__).parent / Path('vetcheena') / Path('data') / Path('train') / Path('spam'))
+        path_spam = str(Path(__file__).parent / Path('train') / Path('spam'))
     except NameError:
-        path_spam = str(Path.cwd() / Path('vetcheena') / Path('data') / Path('train') / Path('spam'))
+        path_spam = str(Path.cwd() / Path('train') / Path('spam'))
 
     try:
-        path_ham = str(Path(__file__).parent / Path('vetcheena') / Path('data') / Path('train') / Path('ham'))
+        path_ham = str(Path(__file__).parent / Path('train') / Path('ham'))
     except NameError:
-        path_ham = str(Path.cwd() / Path('vetcheena') / Path('data') / Path('train') / Path('ham'))
+        path_ham = str(Path.cwd() / Path('train') / Path('ham'))
     HAM = 0
     SPAM = 0
 
